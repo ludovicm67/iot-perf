@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+iotlabcli = "*"
+iotlabsshcli = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.5"
+
+[packages.iotlabaggregator]
+git = "https://github.com/iot-lab/aggregation-tools"
+
+[packages.oml_plot_tools]
+git = "https://github.com/iot-lab/oml-plot-tools"
