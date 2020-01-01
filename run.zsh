@@ -1,6 +1,6 @@
 #!zsh
 
-set -euxo pipefail
+set -euo pipefail
 . ./include.zsh
 
 iotlab experiment submit -d 5 \
@@ -11,5 +11,10 @@ iotlab experiment submit -d 5 \
 
 iotlab experiment wait -i $experiment_id
 
-(while true; do setup_tunnel; done) &
-ssh_iotlab -- serial_aggregator -i $experiment_id
+local -A uid_map=($(iotlab experiment get -r -i $experiment_id | python3 uid_map.py))
+
+setup_tunnel $experiment_id &
+for node ($nodes) {
+  node_ip m3-$node
+}
+ssh_iotlab -- serial_aggregator -l $(experiment_string nodes)

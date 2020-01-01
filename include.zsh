@@ -1,19 +1,26 @@
 . ./config.zsh
 
 setup_tunnel () {
-  ssh_iotlab -- sudo tunslip6.py -v2 -L -a m3-$gateway -p 20000 $prefix
+  while (iotlab experiment wait -i $1) {
+    ssh_iotlab -- sudo tunslip6.py -v2 -L -a m3-$gateway -p 20000 $prefix
+  }
 }
 
 experiment_string () {
   local -a nodes=(${(P)1})
-  local firmware=$2
   local site=$site
+  shift
+  local -a args=(
+    "$site"
+    m3
+    "${(j:+:)nodes}"
+    $@
+  )
 
-  echo -n "$site,m3,${(j:+:)nodes},$firmware"
+  echo "${(j:,:)args}"
+}
 
-  if (( ${+3} )) {
-    echo ",$3"
-  } else {
-    echo
-  }
+node_ip () {
+  local uid=$uid_map[$1]
+  echo "${prefix%/*}$uid"
 }
