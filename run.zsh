@@ -25,6 +25,8 @@ for node ($nodes) {
   ssh_iotlab -- nc m3-$node 20000 | add_timestamp > m3-$node &
 }
 
+coap_bench_all nodes > coap_stats.csv &
+
 wait
 
 echo

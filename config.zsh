@@ -3,7 +3,7 @@ local panid=0x0012
 local prefix=2001:660:4701:f0b1::/64
 
 local site=strasbourg
-local -i gateway=2
+local -i gateway=20
 local -a nodes=(
   17
   37
