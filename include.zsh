@@ -2,7 +2,7 @@
 
 setup_tunnel () {
   while (iotlab experiment wait -i $1) {
-    ssh_iotlab -- sudo tunslip6.py -v2 -L -a m3-$gateway -p 20000 $prefix
+    ssh_iotlab -- sudo tunslip6.py -v3 -L -a m3-$gateway -p 20000 $prefix
   }
 }
 
