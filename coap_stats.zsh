@@ -6,8 +6,10 @@ function coap_print_headers() {
 
 function coap_req() {
   TS=$(date +%s)
+  set +e
   RES=$(coap -T "$1" 2>&1)
   STATUS_CODE="$?"
+  set -e
   if [ "$STATUS_CODE" -ne 0 ]; then
     echo "$TS,$1,0,-1,$STATUS_CODE"
     echo "request failed ; got non-zero status code: $STATUS_CODE" >&2
