@@ -55,8 +55,13 @@ stop () {
   }
 }
 
+coap_observe_loop () {
+  while true; do
+    coap get -o $1 1>&2
+  done
+}
+
 coap_bench_all () {
-  touch $result_dir/coap_observe_pids
   coap_print_headers
   local -a nodes=(${(P)1})
   echo "coap_get_timestamp	$(date '+%s')" >> $result_dir/config
@@ -68,12 +73,29 @@ coap_bench_all () {
     sleep 5
   }
 
+  sleep 30
+
   echo "coap_observe_timestamp	$(date '+%s')" >> $result_dir/config
   local -a pids=()
   for node ($nodes) {
-    coap get "coap://[$(node_ip m3-$node)]/test/push" 1>&2 &
-    echo $! >> $result_dir/coap_observe_pids
+    coap get -o "coap://[$(node_ip m3-$node)]/test/push" 1>&2 &
+    echo $! >> $result_dir/pids
   }
+}
+
+# Ping all nodes
+ping_all () {
+  local -a nodes=(${(P)1})
+  for node ($nodes) {
+    ping6 $(node_ip m3-$node) &
+    echo $! >> $result_dir/pids
+  }
+}
+
+# Fetch the routing table after some delay
+get_routing_table () {
+  sleep 180
+  ssh_iotlab -- curl "http://[$(node_ip m3-$gateway)]"
 }
 
 fetch_results () {
