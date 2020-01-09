@@ -10,9 +10,10 @@ local -a nodes=(
   47
   64
 )
-local contiki=${1:-./contiki}
-local firmware_gw=$contiki/examples/ipv6/rpl-border-router/border-router.iotlab-m3
-local firmware_nd=$contiki/examples/iotlab/04-er-rest-example/er-example-server.iotlab-m3
+
+local firmware=${1:-./firmwares/contiki-mac}
+local contiki=$firmware/contiki
+. $firmware/firmwares.zsh
 
 alias ssh_iotlab="ssh iot2019stras12@$site.iot-lab.info"
 rsync_iotlab () {

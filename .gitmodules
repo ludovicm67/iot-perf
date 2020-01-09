@@ -4,3 +4,15 @@
 [submodule "openlab"]
 	path = openlab
 	url = https://github.com/iot-lab/openlab.git
+[submodule "firmwares/nullrdc/contiki"]
+	path = firmwares/nullrdc/contiki
+	url = git@github.com:ludovicm67/contiki.git
+	branch = master
+[submodule "firmwares/tsch/contiki"]
+	path = firmwares/tsch/contiki
+	url = git@github.com:ludovicm67/contiki.git
+	branch = contiki-tsch
+[submodule "firmwares/contiki-mac/contiki"]
+	path = firmwares/contiki-mac/contiki
+	url = git@github.com:ludovicm67/contiki.git
+	branch = contiki-mac
