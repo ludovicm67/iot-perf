@@ -56,20 +56,26 @@ stop () {
 }
 
 coap_bench_all () {
+  touch $result_dir/coap_observe_pids
   coap_print_headers
   local -a nodes=(${(P)1})
+  echo "coap_get_timestamp	$(date '+%s')" >> $result_dir/config
+  for i ({1..60}) {
+    is_stopping && return
+    for node ($nodes) {
+      coap_req "coap://[$(node_ip m3-$node)]/sensors/light" &
+    }
+    sleep 5
+  }
+
+  echo "coap_observe_timestamp	$(date '+%s')" >> $result_dir/config
+  local -a pids=()
   for node ($nodes) {
-    coap_bench $node &
+    coap get "coap://[$(node_ip m3-$node)]/test/push" 1>&2 &
+    echo $! >> $result_dir/coap_observe_pids
   }
 }
 
-coap_bench () {
-  local node_id=$1
-  local url=coap://[$(node_ip m3-$node_id)]/sensors/light
-
-  for i ({1..60}) {
-    is_stopping && return
-    coap_req $url &
-    sleep 5
-  }
+fetch_results () {
+  rsync_iotlab .iot-lab/$1/ $result_dir
 }

@@ -10,8 +10,11 @@ local -a nodes=(
   47
   64
 )
-local contiki=./contiki
+local contiki=${1:-./contiki}
 local firmware_gw=$contiki/examples/ipv6/rpl-border-router/border-router.iotlab-m3
 local firmware_nd=$contiki/examples/iotlab/04-er-rest-example/er-example-server.iotlab-m3
 
 alias ssh_iotlab="ssh iot2019stras12@$site.iot-lab.info"
+rsync_iotlab () {
+  rsync -avr iot2019stras12@$site.iot-lab.info:$1 $2
+}
