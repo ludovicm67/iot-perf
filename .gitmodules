@@ -16,3 +16,15 @@
 	path = firmwares/contiki-mac/contiki
 	url = git@github.com:ludovicm67/contiki.git
 	branch = contiki-mac
+[submodule "firmwares/contiki-mac-full/contiki"]
+	path = firmwares/contiki-mac-full/contiki
+	url = git@github.com:ludovicm67/contiki.git
+	branch = contiki-mac-full
+[submodule "firmwares/nullrdc-full/contiki"]
+	path = firmwares/nullrdc-full/contiki
+	url = git@github.com:ludovicm67/contiki.git
+	branch = nullrdc-full
+[submodule "firmwares/tsch-full/contiki"]
+	path = firmwares/tsch-full/contiki
+	url = git@github.com:ludovicm67/contiki.git
+	branch = tsch-full

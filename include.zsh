@@ -66,7 +66,6 @@ coap_bench_all () {
   local -a nodes=(${(P)1})
   echo "coap_get_timestamp	$(date '+%s')" >> $result_dir/config
   for i ({1..60}) {
-    is_stopping && return
     for node ($nodes) {
       coap_req "coap://[$(node_ip m3-$node)]/sensors/light" &
     }
@@ -94,8 +93,11 @@ ping_all () {
 
 # Fetch the routing table after some delay
 get_routing_table () {
-  sleep 180
-  ssh_iotlab -- curl "http://[$(node_ip m3-$gateway)]"
+  while (true) {
+    sleep 60
+    local buf="$(ssh_iotlab -- lynx -dump "http://[$(node_ip m3-$gateway)]")"
+    echo "$buf"
+  }
 }
 
 fetch_results () {

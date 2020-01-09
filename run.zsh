@@ -28,6 +28,7 @@ gateway	$gateway
 firmware_gw	$firmware_gw
 firmware_nd	$firmware_nd
 uid_map	${(kv)uid_map}
+start	$(date '+%s')
 EOF
 
 local -a serial_pids=()
@@ -47,7 +48,7 @@ echo $! >> $result_dir/pids
 
 ping_all nodes | add_timestamp > $result_dir/pings &
 
-get_routing_table > $result_dir/rpl.html
+get_routing_table | add_timestamp > $result_dir/rpl.html &
 echo $! >> $result_dir/pids
 
 echo "serial jobs pids: $serial_pids"
