@@ -7,7 +7,7 @@ local -i gateway=20
 local -a nodes=(
   17
   37
-  48
+  47
   64
 )
 local contiki=./contiki

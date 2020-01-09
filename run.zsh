@@ -5,7 +5,7 @@ set -euo pipefail
 
 echo "Submitting experiment" >&2
 
-iotlab experiment submit -d 5 \
+iotlab experiment submit -d 15 \
   -l $(experiment_string nodes $firmware_nd) \
   -l $(experiment_string gateway $firmware_gw) \
   | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])" \
