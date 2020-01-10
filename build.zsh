@@ -1,5 +1,7 @@
 #!zsh
 
+# Build border-router and node firmwares
+
 . ./config.zsh
 
 echo "Build gateway firmware…"

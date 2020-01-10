@@ -1,5 +1,7 @@
 #!zsh
 
+# Handles CSV generation for CoAP requests
+
 function coap_print_headers() {
   echo "timestamp,request_url,request_time,response_code,status_code"
 }
