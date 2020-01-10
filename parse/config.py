@@ -99,7 +99,7 @@ class NodeType(Enum):
 
 class Node(namedtuple('Node', 'uid num type logfile consumption')):
     def ip(self, prefix):
-        return prefix | IPAddress('::' + self.uid)
+        return prefix.network | IPAddress('::' + self.uid)
     
     def conso_dataframe(self):
         with self.consumption.open() as conso_file:
