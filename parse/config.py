@@ -19,7 +19,7 @@ Timings = namedtuple('Timings', 'start coap_get coap_observe')
 
 def parse_config(path):
     config = {}
-    with Path(file).open('r') as f:
+    with Path(path).open('r') as f:
         for line in f:
             [key, value] = line.split('\t')
             config[key.strip()] = value.strip()
@@ -31,7 +31,6 @@ def transform_config(config):
     prefix = IPNetwork('2001:660:4701:f0b1::/64')
     for i in range(int(len(u) / 2)):
         uid_map[u[i * 2]] = u[i * 2 + 1]
-    print(uid_map)
 
     nodes = []
     for num in config['nodes'].split(' '):
