@@ -5,11 +5,14 @@ from collections import namedtuple
 from enum import Enum
 from datetime import datetime
 from netaddr import IPAddress, IPNetwork
+from pandas import DataFrame
+import numpy as np
 
 ROUTES_RE = re.compile(r'^(?P<destination>[0-9a-z:]+/\d+)\s+\(via (?P<via>[0-9a-z:]+)\)\s+(?P<timeout>\d+)s$')
 NEIGHBOR_RE = re.compile(r'^(?P<address>[0-9a-z:]+)$')
 
 Route = namedtuple('Route', 'destination via timeout')
+
 
 class RPL(namedtuple('RPL', 'neighbors routes')):
     def parse_stream(file):
@@ -23,7 +26,6 @@ class RPL(namedtuple('RPL', 'neighbors routes')):
         for ts, body in groups.items():
             rpl[int(ts)] = RPL.parse(body)
         return rpl
-
 
     def parse(body):
         neighbors = []
@@ -41,6 +43,7 @@ class RPL(namedtuple('RPL', 'neighbors routes')):
                     int(match.group('timeout'))
                 ))
         return RPL(neighbors, routes)
+
 
 class Config(namedtuple('Config', 'nodes gateway network timings rpl prefix')):
     def load(prefix):
@@ -84,13 +87,34 @@ class Config(namedtuple('Config', 'nodes gateway network timings rpl prefix')):
             prefix,
         )
 
+
 class NodeType(Enum):
     BORDER_ROUTER = 1
     COAP_SERVER = 2
 
+
 class Node(namedtuple('Node', 'uid num type logfile consumption')):
     def ip(self, prefix):
         return prefix | IPAddress('::' + self.uid)
+    
+    def conso_dataframe(self):
+        with self.consumption.open() as conso_file:
+            fields = [
+                ('timestamp', float),
+                ('type', np.str_, 16),
+                ('num', int),
+                ('t_s', int),
+                ('t_us', int),
+                ("power", float),
+                ("voltage", float),
+                ("current", float),
+            ]
+            names = [entry[0] for entry in fields]
+            data = np.genfromtxt(conso_file, skip_header=9, names=names,
+                                dtype=fields,
+                                invalid_raise=False)
+            return DataFrame(data)
+
 
 Timings = namedtuple('Timings', 'start coap_get coap_observe')
 
