@@ -3,7 +3,7 @@ from pathlib import Path
 from netaddr import IPAddress
 from pandas import DataFrame
 
-RESPONSE_RE = re.compile(r'^(?P<bytes>\d*) bytes from (?P<address>[a-f0-9:]*):\s*icmp_seq=(?P<seq>\d+)\s*ttl=(?P<ttl>\d+)\s*time=(?P<time>\d+)\s*ms$')
+RESPONSE_RE = re.compile(r'^(?P<bytes>\d*) bytes from (?P<address>[a-f0-9:]*)[:,].*icmp_seq=(?P<seq>\d+).*time=(?P<time>[0-9.]+)\s*ms$')
 ERROR_RE = re.compile(r'^From (?P<address>[0-9a-f:]*) icmp_seq=(?P<seq>\d+)')
 HEADER_RE = re.compile(r'^PING')
 
@@ -23,15 +23,8 @@ def parse_line(line):
             float(match.group('time')),
         ]
 
-    match = ERROR_RE.match(rest)
-    if match is not None:
-        return [
-            int(ts),
-            IPAddress(match.group('address')),
-            False,
-            int(match.group('seq')),
-            None,
-        ]
+    if ERROR_RE.match(rest) is not None:
+        return None
 
     raise Exception("Can't parse line line", rest)
 
