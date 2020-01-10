@@ -1,11 +1,48 @@
 import sys
+import re
 from pathlib import Path
 from collections import namedtuple
 from enum import Enum
 from datetime import datetime
 from netaddr import IPAddress, IPNetwork
 
-class Config(namedtuple('Config', 'nodes gateway network timings prefix')):
+ROUTES_RE = re.compile(r'^(?P<destination>[0-9a-z:]+/\d+)\s+\(via (?P<via>[0-9a-z:]+)\)\s+(?P<timeout>\d+)s$')
+NEIGHBOR_RE = re.compile(r'^(?P<address>[0-9a-z:]+)$')
+
+Route = namedtuple('Route', 'destination via timeout')
+
+class RPL(namedtuple('RPL', 'neighbors routes')):
+    def parse_stream(file):
+        groups = {}
+        for line in file:
+            [ts, rest] = line.split('\t')
+            body = groups.get(ts, '')
+            groups[ts] = body + '\n' + rest
+
+        rpl = {}
+        for ts, body in groups.items():
+            rpl[int(ts)] = RPL.parse(body)
+        return rpl
+
+
+    def parse(body):
+        neighbors = []
+        routes = []
+        for line in body.split('\n'):
+            match = NEIGHBOR_RE.match(line)
+            if match is not None:
+                neighbors.append(IPAddress(match.group('address')))
+
+            match = ROUTES_RE.match(line)
+            if match is not None:
+                neighbors.append(Route(
+                    IPNetwork(match.group('destination')),
+                    IPAddress(match.group('via')),
+                    int(match.group('timeout'))
+                ))
+        return RPL(neighbors, routes)
+
+class Config(namedtuple('Config', 'nodes gateway network timings rpl prefix')):
     def load(prefix):
         prefix = Path(prefix)
         config = parse_config(prefix / 'config')
@@ -36,11 +73,14 @@ class Config(namedtuple('Config', 'nodes gateway network timings prefix')):
             coap_observe=datetime.utcfromtimestamp(int(config['coap_observe_timestamp'])),
         )
 
+        rpl = RPL.parse_stream((prefix / 'rpl.html').open())
+
         return Config(
             nodes,
             gateway,
             network,
             timings,
+            rpl,
             prefix,
         )
 

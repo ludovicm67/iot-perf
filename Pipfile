@@ -5,20 +5,15 @@ name = "pypi"
 
 [packages]
 iotlabcli = "*"
-iotlabsshcli = "*"
 notebook = "*"
 matplotlib = "<3.1.0"
 pandas = "*"
 ipython = "<7.10.0"
 netaddr = "*"
+scapy = "*"
+numpy = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.5"
-
-[packages.iotlabaggregator]
-git = "https://github.com/iot-lab/aggregation-tools"
-
-[packages.oml_plot_tools]
-git = "https://github.com/iot-lab/oml-plot-tools"
