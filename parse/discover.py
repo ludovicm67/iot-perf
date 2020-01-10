@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-from config import parse_config
+from .config import parse_config
 
 
 def discover(root):

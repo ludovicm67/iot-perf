@@ -46,6 +46,10 @@ class RPL(namedtuple('RPL', 'neighbors routes')):
 
 
 class Config(namedtuple('Config', 'nodes gateway network timings rpl prefix')):
+    @property
+    def all_nodes(self):
+        return self.nodes + [self.gateway]
+
     def load(prefix):
         prefix = Path(prefix)
         config = parse_config(prefix / 'config')
@@ -113,7 +117,7 @@ class Node(namedtuple('Node', 'uid num type logfile consumption')):
             data = np.genfromtxt(conso_file, skip_header=9, names=names,
                                 dtype=fields,
                                 invalid_raise=False)
-            return DataFrame(data)
+            return DataFrame(data, index=data['timestamp'])
 
 
 Timings = namedtuple('Timings', 'start coap_get coap_observe')
